@@ -1,13 +1,26 @@
-# 1.5-Bit Quantized GPT-OSS-20B Inference
+# Multi-Platform GPT-OSS-20B Quantization
 
-Implementation of post-training quantization to 1.58-bit (ternary weights) for OpenAI's GPT-OSS-20B model using the PT-BitNet approach, enabling efficient inference with minimal accuracy loss.
+Implementation of platform-optimized quantization for OpenAI's GPT-OSS-20B model targeting different deployment scenarios with optimal performance and memory usage.
 
-## Project Goals
+## Platform Targets
 
-- Quantize GPT-OSS-20B from ~42GB to ~1.5GB using ternary weights {-1, 0, +1}
-- Achieve 2-3x inference speedup on CPU
-- Maintain accuracy with <5% degradation on key metrics
-- No fine-tuning required - pure post-training quantization
+### 🖥️ Snapdragon Copilot PC (4-bit)
+- **Target**: Snapdragon Elite X with 32GB RAM
+- **Model Size**: ~10.5GB (4x compression from 42GB)
+- **Method**: Standard PyTorch dynamic quantization
+- **Use Case**: Professional productivity and development
+
+### 📱 iPhone Core ML (2-bit)
+- **Target**: iPhone with Neural Engine (A14+ chips)
+- **Model Size**: ~5.25GB (8x compression from 42GB)
+- **Method**: Core ML optimized with Neural Engine acceleration
+- **Use Case**: On-device AI assistant and apps
+
+### 🔬 Research Ternary (1.58-bit)
+- **Target**: Maximum compression research
+- **Model Size**: ~1.5GB (28x compression from 42GB)
+- **Method**: PT-BitNet ternary quantization
+- **Use Case**: Extreme efficiency experiments
 
 ## Current Status
 

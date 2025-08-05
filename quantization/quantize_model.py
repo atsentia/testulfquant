@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-Quantize GPT-OSS-20B model to 1.58-bit using PT-BitNet.
+Multi-target quantization for GPT-OSS-20B model.
+
+Supports multiple quantization targets:
+- 4-bit: Snapdragon Elite X (Standard PyTorch, ~10.5GB)
+- 2-bit: iPhone Core ML (Neural Engine optimized, ~5.25GB)
+- 1.58-bit: Maximum compression (Original PT-BitNet, ~1.5GB)
 """
 
 import os
@@ -24,6 +29,14 @@ from quantization import (
     BitLinear,
     replace_linear_with_bitlinear
 )
+
+try:
+    from quantization.pytorch_4bit import PyTorch4BitQuantizer
+    from quantization.coreml_2bit import CoreML2BitQuantizer, save_coreml_quantized_model
+    ADVANCED_QUANTIZATION_AVAILABLE = True
+except ImportError:
+    ADVANCED_QUANTIZATION_AVAILABLE = False
+    print("Advanced quantization modules not available. Only 1.58-bit quantization will work.")
 
 
 def save_quantized_model(
@@ -118,15 +131,17 @@ def calculate_model_size(quantized_layers: Dict[str, Dict[str, Any]]) -> Dict[st
 def quantize_gpt_oss_20b(
     model_path: str,
     output_dir: str,
+    quantization_target: str = "ternary",
     block_size: int = 128,
     optimization_steps: int = 100
 ):
     """
-    Quantize GPT-OSS-20B model to 1.58-bit.
+    Quantize GPT-OSS-20B model to specified bit-width.
     
     Args:
         model_path: Path to the model
         output_dir: Directory to save quantized model
+        quantization_target: Target platform ("ternary", "snapdragon", "iphone")
         block_size: Block size for optimization
         optimization_steps: Number of optimization steps
     """
